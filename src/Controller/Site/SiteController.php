@@ -14,7 +14,8 @@ class SiteController extends AbstractController
     {
         return $this->render('site/index.html.twig', [
             'title' => 'Maretraite Hotel',
-            'user' => $this->getUser()
+            'user' => $this->getUser(),
+            'isDebug' => true
         ]);
     }
 }

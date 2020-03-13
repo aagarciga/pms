@@ -1,0 +1,51 @@
+{% extends 'site.html.twig' %}
+
+{% block title %}
+	{{ title }}
+{% endblock %}
+
+{% block stylesheets %}
+	{{ parent() }}
+	{{ encore_entry_link_tags('site-booking') }}
+{% endblock %}
+
+{% block javascripts %}
+	{{ parent() }}
+	{{ encore_entry_script_tags('site-booking') }}
+{% endblock %}
+
+{% block debug %}
+	<nav class="nav">
+		<a class="nav-link active" href="{{path('app_login')}}">Login</a>
+		{% if user %}
+		<a class="nav-link" href="{{path('app_logout')}}">Log out</a>
+		{% else %}
+		<a class="nav-link disabled" href="{{path('app_logout')}}" tabindex="-1" aria-disabled="true">Log out</a>
+		{% endif %}
+	</nav>
+{% endblock %}
+
+{% block body %}
+{# 
+	<div class=".container">
+
+		<form action="?" class="container">
+			<h1>Date Picker ({{ "now"|date("m/d/Y") }})</h1>
+			<input type="text" id="litepicker-in"/>
+			<input type="text" id="litepicker-out"/>
+			<div id="calendar"></div>
+		</form>
+	</div> #}
+
+	<div class="container">
+	{# {{ form(bookingRequestForm) }} #}
+
+	{{ form_start(bookingRequestForm, {'attr': {'id':'hola', 'novalidate': 'novalidate'}}) }}
+    	{{ form_widget(bookingRequestForm) }}
+
+		
+	{{ form_end(bookingRequestForm) }}
+
+	</div>
+
+{% endblock %}

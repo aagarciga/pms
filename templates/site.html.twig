@@ -1,17 +1,22 @@
-{% extends 'site.html.twig' %}
+{% extends 'base.html.twig' %}
 
 {% block title %}
 	{{ title }}
 {% endblock %}
 
+{% block meta %}
+	{{ parent() }}
+	<meta name="description" content="{{ 'site.description' | trans }}">
+{% endblock %}
+
 {% block stylesheets %}
 	{{ parent() }}
-	{{ encore_entry_link_tags('site-index') }}
+	{{ encore_entry_link_tags('site') }}
 {% endblock %}
 
 {% block javascripts %}
 	{{ parent() }}
-	{{ encore_entry_script_tags('site-index') }}
+	{{ encore_entry_script_tags('site') }}
 {% endblock %}
 
 {% block debug %}
@@ -29,7 +34,6 @@
 
 	<div class=".container-fluid">
 
-		
 	</div>
 
 {% endblock %}
