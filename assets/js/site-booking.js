@@ -40,6 +40,7 @@ let picker = new Litepicker({
     constants.ACTION_ADD = 'add';
     constants.ACTION_REMOVE = 'remove';
     constants.CONTROL_NAME = 'control-group';
+    constants.ROOM_CONTROL_GROUP = 'room-control-group';
 
     properties.roomSelectorCounter = 1;
 
@@ -75,8 +76,62 @@ let picker = new Litepicker({
     }
 
     functions.removeControl = function (controlIndex){
-      console.log("removing" + controlIndex);
-      $controlGroup = $("."+ constants.CONTROL_NAME+"-"+controlIndex);
+      let $controlGroup = functions.getControlGroup(controlIndex);
+      // console.log("removing:", $controlGroup);
+      $controlGroup.remove();
+      let controlsToUpdate = functions.getControlGroupAfterIndex(controlIndex);
+      // console.log("to update: ", controlsToUpdate);
+      functions.updateControlGroupAfterIndex(controlIndex);
+    }
+
+    functions.buildControlGroupClassBy = function(index){
+      return `${constants.CONTROL_NAME}-${index}`;
+    }
+
+    functions.getControlGroup = function(index) {
+      let controlGroupName = "."+functions.buildControlGroupClassBy(index);
+      return $(controlGroupName);
+    }
+
+    functions.getControlGroupAfterIndex = function(index) {
+      let result = new Array();
+      let totalControlCount = $('.'+constants.ROOM_CONTROL_GROUP).length;
+      let controlCountLeft = totalControlCount - index;
+      
+      let start = index + 1; //Alex: excluding the index of the control to remove
+      let ends = start + controlCountLeft; //Alex: the remaining controls to update
+
+      for(let i = start; i <= ends; i++){
+        result.push(functions.getControlGroup(i));
+      }
+      return result;
+    }
+
+    functions.updateControlGroupAfterIndex = function(index){
+      let collection = functions.getControlGroupAfterIndex(index);
+
+      collection.forEach(function(item, i, array) {
+        functions.updateControlGroup(index+i, item);
+      });
+    }
+
+    functions.updateControlGroup = function(index, $controlGroup){
+      //TODO: update each control group
+      //Alex: index passed as a parameter for optimization. 
+      console.log(index, $controlGroup);
+
+      $controlGroup.removeClass(functions.buildControlGroupClassBy(index + 1))
+        .addClass(functions.buildControlGroupClassBy(index));
+      let $label = $controlGroup.find('label');
+      $label.attr('for', $label.attr('for').replace(/.$/,index) );
+      $label.html($label.html().replace(/.$/,index));
+      let $select = $controlGroup.find('select');
+      $select.attr('id', $select.attr('id').replace(/.$/, index));
+      let $button = $controlGroup.find('button');
+      console.log(" 1 >>>", $button.data('controllerIndex'), index);
+      $button.data("controllerIndex", index);
+      $button.attr('id', $select.attr('id').replace(/.$/, index));
+      console.log(" 2 >>>", $button.data('controllerIndex'), index);
     }
 
     functions.buildRoomSelectorControl = function(option = 0){
@@ -95,7 +150,7 @@ let picker = new Litepicker({
       }
  
       return `
-      <div class="form-group ${constants.CONTROL_NAME}-${properties.roomSelectorCounter}">
+      <div class="form-group room-control-group ${constants.CONTROL_NAME}-${properties.roomSelectorCounter}">
         <label for="Select_room_${properties.roomSelectorCounter}">Room ${properties.roomSelectorCounter}</label>
         <div class="input-group">
         <select class="form-control" id="Select_room_${properties.roomSelectorCounter}">
@@ -110,7 +165,7 @@ let picker = new Litepicker({
     };
 
     eventHandlers.formInputGroupAppendedButton__onClick = function (event) {
-      global.console.info(event, properties.roomSelectorCounter);
+      // global.console.info(event, properties.roomSelectorCounter);
       let $button = $(event.target);
       let action = $button.data('action');
       let controllerIndex = $button.data('controllerIndex');
