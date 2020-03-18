@@ -71,8 +71,9 @@ let picker = new Litepicker({
     };
 
     functions.removeControlAndUpdate = function (controlIndex) {
-      console.log(controlIndex);
+      
       functions.removeControl(controlIndex);
+      properties.roomSelectorCounter--;
     }
 
     functions.removeControl = function (controlIndex){
